@@ -44,7 +44,12 @@ class build {
 
   package { 'vim':
     ensure => 'latest',
-    require => Class[aptupdate]
+    require => Class[aptupdate],
+  }
+
+  package { 'unzip':
+    ensure => 'latest',
+    require => Class[aptupdate],
   }
 }
 
@@ -82,7 +87,65 @@ class io {
   }
 }
 
+class prolog {
+  package { "swi-prolog":
+    ensure => present,
+    require => Class[aptupdate],
+  }
+}
+
+class scala {
+  package { "scala":
+    ensure => present,
+    require => Class[aptupdate],
+  }
+}
+
+class erlang {
+  package { "erlang-base":
+    ensure => present,
+    require => Class[aptupdate],
+  }
+}
+
+class clojure {
+  exec { 'download jar':
+    command => '/usr/bin/wget http://repo1.maven.org/maven2/org/clojure/clojure/1.5.1/clojure-1.5.1.zip',
+    cwd => '/vagrant',
+    require => Class[build],
+  }
+
+  exec { 'unzip jar':
+    command => '/usr/bin/unzip clojure-1.5.1.zip',
+    cwd => '/vagrant',
+    require => Exec['download jar'],
+  }
+
+  file { '/vagrant/clojure':
+    ensure => link,
+    target => '/vagrant/clojure-1.5.1',
+    require => Exec['unzip jar'],
+  }
+}
+
+class haskell {
+  package { "haskell-platform":
+    ensure => present,
+    require => Class[aptupdate],
+  }
+
+  package { "hugs":
+    ensure => present,
+    require => Class[aptupdate],
+  }
+}
+
 include aptupdate
 include build
 include ruby
 include io
+#include prolog
+#include scala
+#include erlang
+#include clojure
+#include haskell
