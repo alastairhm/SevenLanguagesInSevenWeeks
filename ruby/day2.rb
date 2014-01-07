@@ -31,4 +31,8 @@ num.each { |n|
     end
     }
 
+puts "Each slice Solution"
+
+ num.each_slice(4){|n| pp n}
+
 #ruby day2.rb
