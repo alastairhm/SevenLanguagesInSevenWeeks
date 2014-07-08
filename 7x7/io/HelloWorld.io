@@ -1,2 +1,0 @@
-"Hi ho, Io" println
-
